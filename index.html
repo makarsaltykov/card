@@ -87,7 +87,6 @@
       z-index: 2;
     }
 
-    /* Клапан теперь просто контейнер для вращения */
     .flap {
       position: absolute;
       inset: 0;
@@ -97,7 +96,6 @@
       transform-style: preserve-3d;
     }
 
-    /* Форма треугольника вынесена отдельно */
     .flap-shape {
       position: absolute;
       inset: 0;
@@ -106,7 +104,6 @@
       backface-visibility: hidden;
     }
 
-    /* Печать вынесена отдельно от clip-path, поэтому больше не обрезается */
     .seal {
       position: absolute;
       left: 50%;
@@ -114,7 +111,7 @@
       transform: translate(-50%, -50%);
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, #a61b3f, #7a1631); /* Глубокий рубиновый цвет */
+      background: linear-gradient(135deg, #a61b3f, #7a1631);
       border: 2px solid #5c0f22;
       border-radius: 50%;
       display: grid;
@@ -530,7 +527,6 @@
         setTimeout(() => {
           statusText.textContent = "ДЖЕКПОТ! 🎰 Я знал, что это судьба!";
           
-          // Первоначальный мощный взрыв
           const letterRect = document.getElementById("letter").getBoundingClientRect();
           const originX = letterRect.left + letterRect.width / 2;
           const originY = letterRect.top + letterRect.height / 2;
@@ -539,14 +535,12 @@
             setTimeout(() => spawnParticles(22, originX, originY, "confetti"), i * 150);
           }
 
-          // Бесконечный цикл салюта
           setInterval(() => {
-            // Пересчитываем координаты на случай, если пользователь проскроллил или изменил размер окна
             const currentRect = document.getElementById("letter").getBoundingClientRect();
             const cx = currentRect.left + currentRect.width / 2;
             const cy = currentRect.top + currentRect.height / 2;
             spawnParticles(12, cx, cy, "confetti");
-          }, 600); // Каждые 0.6 секунд вылетает новая порция
+          }, 600);
 
         }, 5900);
       }
@@ -569,11 +563,24 @@
         }
       });
 
+      // --- ОБНОВЛЕННЫЕ ОБРАБОТЧИКИ ДЛЯ КНОПКИ "НЕТ" ---
+      
+      // Для мышки на ПК
       noBtn.addEventListener("pointerenter", escapeNoButton);
-      noBtn.addEventListener("pointerdown", (event) => {
+      
+      // Для сенсорных экранов: срабатывает моментально при касании, блокируя клик
+      noBtn.addEventListener("touchstart", (event) => {
+        event.preventDefault(); 
+        escapeNoButton();
+      }, { passive: false });
+
+      // На случай, если кто-то умудрится "кликнуть" (например, табом с клавиатуры)
+      noBtn.addEventListener("click", (event) => {
         event.preventDefault();
         escapeNoButton();
       });
+
+      // ------------------------------------------------
 
       yesBtn.addEventListener("click", win);
       yesBtn.addEventListener("keydown", (event) => {
